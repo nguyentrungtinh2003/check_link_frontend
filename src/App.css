@@ -1,8 +1,18 @@
+/* Giữ cho #root full width */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+}
+
+/* Class custom margin-top 40px */
+.mt-40 {
+  margin-top: 40px !important;
+}
+
+html,
+body {
+  width: 100% !important;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {
@@ -33,9 +43,9 @@
   }
 }
 
-.card {
+/* .card {
   padding: 2em;
-}
+} */
 
 .read-the-docs {
   color: #888;
