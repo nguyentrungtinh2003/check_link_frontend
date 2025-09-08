@@ -5,10 +5,11 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <Routes>
-        {/* Định nghĩa route */}
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <div style={{ marginTop: "135px" }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

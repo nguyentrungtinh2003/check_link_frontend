@@ -13,7 +13,9 @@ function Home() {
     setError("");
     setResult(null);
 
-    const res = await axios.get(`http://localhost:8081/api/check?url=${url}`);
+    const res = await axios.get(
+      `http://localhost:8081/api/check?url=${url.trim()}`
+    );
     if (res.status !== 200) {
       setError(res.message || "Đã xảy ra lỗi. Vui lòng thử lại.");
       setLoading(false);
@@ -37,15 +39,15 @@ function Home() {
 
   return (
     <div className="container mt-5">
-      <div className="card shadow-lg border-0 rounded-3">
-        <div className="card-body p-4">
+      <div className="card shadow-lg border border-2 border-primary rounded-4 p-2">
+        <div className="card-body">
           {/* Form nhập URL */}
-          <form onSubmit={handleSubmit} className="mb-4">
+          <form onSubmit={handleSubmit} className="m-4">
             <div className="row g-2">
               <div className="col-12 col-md-9">
                 <input
-                  type="text"
-                  className="form-control"
+                  type="search"
+                  className="form-control border rounded-4"
                   placeholder="Nhập URL cần kiểm tra..."
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -53,7 +55,10 @@ function Home() {
                 />
               </div>
               <div className="col-12 col-md-3 d-grid">
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary border rounded-4"
+                >
                   {loading ? (
                     <>
                       <span
@@ -76,13 +81,13 @@ function Home() {
           {/* Kết quả */}
           {result && (
             <div>
-              <h5 className="mb-3 text-success">
+              <h5 className="mb-3 text-primary">
                 <i className="bi bi-check-circle-fill me-2"></i>
                 Kết quả kiểm tra URL
               </h5>
 
               {/* Google Safe Browsing */}
-              <div className="card mb-3 shadow-sm border-0">
+              <div className="card border border-primary mb-3 shadow-sm border-1 rounded-4">
                 <div className="card-body d-flex justify-content-between align-items-center flex-wrap">
                   <span>
                     <i className="bi bi-shield-lock-fill me-2 text-primary"></i>
@@ -103,7 +108,7 @@ function Home() {
               </div>
 
               {/* VirusTotal */}
-              <div className="card mb-3 shadow-sm border-0">
+              <div className="card mb-3 shadow-sm border-1 border border-primary rounded-4">
                 <div className="card-body">
                   <span>
                     <i className="bi bi-bug-fill me-2 text-danger"></i>
@@ -132,7 +137,7 @@ function Home() {
                                   stats.malicious > 0 ? "table-danger" : ""
                                 }
                               >
-                                {stats.malicious}
+                                {stats.malicious}{" "}
                               </td>
                               <td
                                 className={
@@ -155,7 +160,7 @@ function Home() {
               </div>
 
               {/* PhishTank */}
-              <div className="card shadow-sm border-0">
+              <div className="card shadow-sm border-1 border border-primary rounded-4">
                 <div className="card-body d-flex justify-content-between align-items-center flex-wrap">
                   <span>
                     <i className="bi bi-fish me-2 text-info"></i>
@@ -179,8 +184,8 @@ function Home() {
                         }`}
                       >
                         {res.category === "malicious"
-                          ? "Có trong danh sách lừa đảo"
-                          : "Không có trong danh sách lừa đảo"}
+                          ? "Có trong danh sách lừa đảo và giả mạo"
+                          : "Không có trong danh sách lừa đảo và giả mạo"}
                       </span>
                     );
                   })()}
@@ -190,6 +195,9 @@ function Home() {
           )}
         </div>
       </div>
+      <footer className="text-center py-3 mt-5 border-top">
+        <p className="mb-0">© 2025 Bản quyền thuộc về Trung Tính Dev</p>
+      </footer>
     </div>
   );
 }
