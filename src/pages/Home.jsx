@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import URL from "../components/API";
 
 function Home() {
   const [url, setUrl] = useState("");
@@ -13,9 +14,7 @@ function Home() {
     setError("");
     setResult(null);
 
-    const res = await axios.get(
-      `http://localhost:8081/api/check?url=${url.trim()}`
-    );
+    const res = await axios.get(`${URL}/check?url=${url.trim()}`);
     if (res.status !== 200) {
       setError(res.message || "Đã xảy ra lỗi. Vui lòng thử lại.");
       setLoading(false);
