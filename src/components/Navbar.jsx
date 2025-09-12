@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Nav } from "react-bootstrap";
+import { Nav, Dropdown } from "react-bootstrap";
 
 function Navbar() {
   const [username, setUsername] = useState(null);
@@ -26,16 +26,27 @@ function Navbar() {
         </a>
 
         <Nav className="ms-auto d-flex align-items-center">
+          {" "}
           {username ? (
-            <div className="d-flex align-items-center text-white fw-bold">
-              <img
-                src="https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
-                className="me-2"
-                width={40}
-                height={40}
-              />
-              {username}
-            </div>
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                <div className="d-flex align-items-center text-white fw-bold">
+                  <img
+                    src="https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
+                    className="me-2"
+                    width={40}
+                    height={40}
+                  />
+                  {username}
+                </div>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
+                <Dropdown.Item href="/history">Lịch sử</Dropdown.Item>
+                <Dropdown.Item onClick={Logout}>Đăng xuất</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           ) : (
             <a
               href="/auth/login"
@@ -43,19 +54,14 @@ function Navbar() {
             >
               <img
                 src="https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
-                className="me-2"
+                className="mt-2"
                 width={40}
                 height={40}
               />
-              Đăng nhập
+              <span className="m-2">Đăng nhập</span>
             </a>
           )}
         </Nav>
-        <div>
-          <button onClick={() => Logout()} className="btn btn-danger">
-            Logout
-          </button>
-        </div>
       </div>
     </nav>
   );

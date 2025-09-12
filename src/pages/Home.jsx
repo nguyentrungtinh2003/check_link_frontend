@@ -7,33 +7,50 @@ function Home() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const token = localStorage.getItem("token");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setResult(null);
 
-    const res = await axios.get(`${URL}/check?url=${url.trim()}`);
-    if (res.status !== 200) {
-      setError(res.message || "Đã xảy ra lỗi. Vui lòng thử lại.");
+    if (token === null) {
+      setError("Vui lòng đăng nhập để sử dụng dịch vụ.");
       setLoading(false);
-      console.log(res);
       return;
     }
-    // Sau khi nhận response từ backend
-    let data = res.data;
 
-    // Nếu virusTotal là string, parse sang object
-    if (typeof data.virusTotal === "string") {
-      try {
-        data.virusTotal = JSON.parse(data.virusTotal);
-      } catch (e) {
-        console.error("VirusTotal không parse được JSON:", e);
+    try {
+      const res = await axios.get(`${URL}/check?url=${url.trim()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status !== 200) {
+        setError(res.message || "Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây.");
+        setLoading(false);
+        console.log(res);
+        return;
       }
+
+      let data = res.data;
+
+      if (typeof data.virusTotal === "string") {
+        try {
+          data.virusTotal = JSON.parse(data.virusTotal);
+        } catch (e) {
+          console.error("VirusTotal không parse được JSON:", e);
+        }
+      }
+
+      setResult(data);
+    } catch (err) {
+      console.error("Request error:", err);
+      setError("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây.");
+    } finally {
+      setLoading(false);
     }
-    setResult(data);
-    setLoading(false);
   };
 
   return (

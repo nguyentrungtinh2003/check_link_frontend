@@ -8,10 +8,17 @@ const History = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const cellStyle = {
+    maxWidth: "200px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem("user")); // bạn nhớ set userId khi login nhé
+        const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
           setError("Bạn chưa đăng nhập !");
           setLoading(false);
@@ -59,10 +66,10 @@ const History = () => {
               <tr>
                 <th>#</th>
                 <th>URL</th>
-                <th>IP</th>
-                <th>User Agent</th>
-                <th>Kết quả Google</th>
-                <th>Kết quả VirusTotal</th>
+                {/* <th>IP</th>
+                <th>User Agent</th> */}
+                <th>Google Safe Browsing</th>
+                <th>VirusTotal PhishTank</th>
                 <th>Thời gian</th>
               </tr>
             </thead>
@@ -70,14 +77,33 @@ const History = () => {
               {histories?.map((h, index) => (
                 <tr key={h.id}>
                   <td>{index + 1}</td>
-                  <td>{h.url}</td>
-                  <td>{h.ipAddress}</td>
-                  <td style={{ maxWidth: "200px", wordBreak: "break-word" }}>
-                    {h.userAgent}
+                  <td style={cellStyle} title={h.urlCheck}>
+                    {h.urlCheck}
                   </td>
-                  <td>{h.googleSafeBrowsing}</td>
-                  <td>{h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}</td>
-                  <td>{new Date(h.createdAt).toLocaleString()}</td>
+                  {/* <td style={cellStyle} title={h.ipAddress}>
+                    {h.ipAddress}
+                  </td>
+                  <td
+                    style={{ maxWidth: "200px", wordBreak: "break-word" }}
+                    title={h.userAgent}
+                  >
+                    {h.userAgent}
+                  </td> */}
+                  <td style={cellStyle} title={h.googleSafeBrowsing}>
+                    {h.googleSafeBrowsing}
+                  </td>
+                  <td
+                    style={cellStyle}
+                    title={h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
+                  >
+                    {h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
+                  </td>
+                  <td
+                    style={cellStyle}
+                    title={new Date(h.createdAt).toLocaleString()}
+                  >
+                    {new Date(h.createdAt).toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>

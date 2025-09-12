@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import History from "./pages/History";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/history" element={<History />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
