@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Container, Spinner, Alert, Card } from "react-bootstrap";
+import { Table, Container, Spinner, Alert, Card, Badge } from "react-bootstrap";
 import axios from "axios";
 import URL from "../components/API";
 
@@ -32,9 +32,12 @@ const History = () => {
           },
         });
 
-        setHistories(response.data.data || []);
+        const historyData = response.data.data;
+        const history = historyData.reverse();
+
+        setHistories(history || []);
       } catch (err) {
-        setError("Không thể tải lịch sử!");
+        setError("Không thể tải lịch sử !");
       } finally {
         setLoading(false);
       }
@@ -44,8 +47,13 @@ const History = () => {
   }, []);
 
   return (
-    <Container style={{ marginTop: "80px" }}>
-      <Card className="p-4 shadow-lg">
+    <Container
+      style={{ marginTop: "80px", maxHeight: "80vh", overflowY: "auto" }}
+    >
+      <Card
+        className="p-4 shadow-lg"
+        style={{ maxHeight: "550px", overflowY: "auto" }}
+      >
         <h3 className="mb-4 text-center">Lịch sử kiểm tra URL</h3>
 
         {loading && (
@@ -96,7 +104,9 @@ const History = () => {
                     style={cellStyle}
                     title={h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
                   >
-                    {h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
+                    <Badge bg={h.virusTotal?.malicious ? "danger" : "success"}>
+                      {h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
+                    </Badge>
                   </td>
                   <td
                     style={cellStyle}

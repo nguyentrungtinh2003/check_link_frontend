@@ -189,7 +189,8 @@ function Home() {
 
                     const res =
                       vt.results["Phishtank"] || vt.results["PhishTank"];
-                    if (!res) return "Không có dữ liệu";
+                    if (!res)
+                      return "Không có dữ liệu. Vui lòng nhấn nút kiểm tra 1 lần nữa";
 
                     return (
                       <span
