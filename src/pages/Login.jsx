@@ -114,6 +114,10 @@ const Login = () => {
           <span>Chưa có tài khoản ? </span>
           <a href="/auth/register">Đăng ký</a>
         </div>
+        <div className="text-center mt-3">
+          <span>Quên mật khẩu ? </span>
+          <a href="/auth/send-otp">Đặt lại mật khẩu</a>
+        </div>
       </Card>
     </Container>
   );

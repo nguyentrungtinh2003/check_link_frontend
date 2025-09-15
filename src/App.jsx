@@ -5,8 +5,31 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
+import SendOTP from "./pages/SendOTP";
+import ResetPassword from "./pages/ResetPassword";
+import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/auth/login";
+        }
+      } catch (err) {
+        console.error("Token không hợp lệ:", err);
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/auth/login";
+      }
+    }
+  }, []);
+
   return (
     <Router>
       <Navbar />
@@ -17,6 +40,8 @@ function App() {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/history" element={<History />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/auth/send-otp" element={<SendOTP />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
         </Routes>
       </div>
     </Router>
