@@ -12,11 +12,10 @@ import axios from "axios";
 import URL from "../components/API";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const ResetPassword = () => {
+const VerifyAcc = () => {
   const [formData, setFormData] = useState({
-    email: localStorage.getItem("email-resetpass") || "",
+    email: localStorage.getItem("email-verifyacc") || "",
     otp: "",
-    newPassword: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,14 +33,14 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${URL}/auth/reset-password`, formData);
-      setSuccess(res.data.message || "Đặt lại mật khẩu thành công!");
-      setFormData({ email: "", otp: "", newPassword: "" });
+      const res = await axios.post(`${URL}/auth/verify-acc`, formData);
+      setSuccess(res.data.message || "Xác thực tài khoản thành công !");
+      setFormData({ email: "", otp: "" });
       setTimeout(() => {
         window.location.href = "/auth/login";
       }, 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Đặt lại mật khẩu thất bại!");
+      setError(err.response?.data?.message || "Xác thực tài khoản thất bại!");
     } finally {
       setLoading(false);
     }
@@ -53,7 +52,7 @@ const ResetPassword = () => {
       style={{ marginTop: "80px" }}
     >
       <Card className="p-4 shadow-lg" style={{ width: "400px" }}>
-        <h3 className="text-center mb-4">Đặt lại mật khẩu</h3>
+        <h3 className="text-center mb-4">Xác thực tài khoản</h3>
 
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
@@ -83,7 +82,7 @@ const ResetPassword = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="newPassword">
+          {/* <Form.Group className="mb-3" controlId="newPassword">
             <Form.Label>Mật khẩu mới</Form.Label>
             <InputGroup>
               <Form.Control
@@ -101,13 +100,13 @@ const ResetPassword = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </Button>
             </InputGroup>
-          </Form.Group>
+          </Form.Group> */}
 
           <Button type="submit" className="w-100" disabled={loading}>
             {loading ? (
               <Spinner animation="border" size="sm" />
             ) : (
-              "Đặt lại mật khẩu"
+              "Xác thực tài khoản"
             )}
           </Button>
         </Form>
@@ -116,4 +115,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default VerifyAcc;

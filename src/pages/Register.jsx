@@ -49,7 +49,7 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       });
-      setSuccess("Đăng ký thành công!");
+      setSuccess("Đăng ký thành công, vui lòng kiểm tra email để xác thực !");
       console.log(response.data);
       setFormData({
         username: "",
@@ -57,7 +57,10 @@ const Register = () => {
         password: "",
         confirmPassword: "",
       });
-      window.location.href = "/auth/login"; // Chuyển hướng đến trang đăng nhập
+      localStorage.setItem("email-verifyacc", formData.email);
+      setTimeout(() => {
+        window.location.href = "/auth/verify-acc";
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.message || "Đăng ký thất bại!");
     } finally {
@@ -93,7 +96,7 @@ const Register = () => {
             <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
-              placeholder="Nhập email"
+              placeholder="Nhập email thật, vì có bước xác thực OTP"
               name="email"
               value={formData.email}
               onChange={handleChange}

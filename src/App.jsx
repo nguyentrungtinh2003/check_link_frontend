@@ -7,6 +7,7 @@ import History from "./pages/History";
 import Profile from "./pages/Profile";
 import SendOTP from "./pages/SendOTP";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyAcc from "./pages/VerifyAcc";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 
@@ -42,6 +43,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/auth/send-otp" element={<SendOTP />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/verify-acc" element={<VerifyAcc />} />
         </Routes>
       </div>
     </Router>

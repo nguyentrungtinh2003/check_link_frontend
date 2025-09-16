@@ -21,8 +21,10 @@ const SendOTP = () => {
         res.data.message || "OTP đã được gửi, vui lòng kiểm tra email!"
       );
       setEmail("");
-      localStorage.setItem("email", email);
-      window.location.href = "/auth/reset-password";
+      localStorage.setItem("email-resetpass", email);
+      setTimeout(() => {
+        window.location.href = "/auth/reset-password";
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.message || "Gửi OTP thất bại!");
     } finally {

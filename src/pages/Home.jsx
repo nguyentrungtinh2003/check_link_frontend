@@ -212,7 +212,11 @@ function Home() {
           )}
         </div>
       </div>
-      <footer className="text-center py-3 mt-5 border-top">
+      <small className="m-2 d-block text-center mt-3 text-danger">
+        ⚠️ Mỗi phút bạn chỉ được phép gửi 5 lần
+      </small>
+
+      <footer className="text-center py-3 m-2 border-top">
         <p className="mb-0">© 2025 Bản quyền thuộc về Trung Tính Dev</p>
       </footer>
     </div>
