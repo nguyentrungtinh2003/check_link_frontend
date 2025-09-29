@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function Navbar() {
   const [username, setUsername] = useState(null);
@@ -8,20 +9,25 @@ function Navbar() {
     const storedUser = JSON.parse(localStorage.getItem("user")); // lấy username từ localStorage
     if (storedUser) {
       setUsername(storedUser.username);
-      console.log("Navbar render, username:", storedUser);
     }
   }, []);
 
   const Logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    window.location.href = "/auth/login"; // Chuyển hướng đến trang đăng nhập
+    toast.success("Đăng xuất thành công!");
+    setTimeout(() => {
+      window.location.href = "/"; // Redirect to home page after logout
+    }, 3000);
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-primary bg-primary shadow-sm fixed-top">
       <div className="container d-flex justify-content-between align-items-center">
-        <a className="navbar-brand fw-bold fs-4 text-white" href="/">
+        <a
+          className="navbar-brand fw-bold fs-4 text-white hover-move-up"
+          href="/"
+        >
           URL Checker
         </a>
 
@@ -44,7 +50,9 @@ function Navbar() {
               <Dropdown.Menu>
                 <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
                 <Dropdown.Item href="/history">Lịch sử</Dropdown.Item>
-                <Dropdown.Item onClick={Logout}>Đăng xuất</Dropdown.Item>
+                <Dropdown.Item className="text-danger" onClick={Logout}>
+                  Đăng xuất
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           ) : (

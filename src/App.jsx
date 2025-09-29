@@ -10,29 +10,42 @@ import ResetPassword from "./pages/ResetPassword";
 import VerifyAcc from "./pages/VerifyAcc";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.exp * 1000 < Date.now()) {
+    const checkToken = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            toast.info("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
+            setTimeout(() => {
+              window.location.href = "/auth/login";
+            }, 3000);
+          }
+        } catch (err) {
+          toast.error("Token không hợp lệ:", err);
           localStorage.removeItem("token");
           localStorage.removeItem("user");
-          window.location.href = "/auth/login";
+          setTimeout(() => {
+            window.location.href = "/auth/login";
+          }, 3000);
         }
-      } catch (err) {
-        console.error("Token không hợp lệ:", err);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/auth/login";
       }
-    }
+    };
+    checkToken();
+    const interval = setInterval(checkToken, 30 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <Router>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Navbar />
       <div style={{ marginTop: "135px" }}>
         <Routes>

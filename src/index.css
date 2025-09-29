@@ -33,6 +33,14 @@ h1 {
   line-height: 1.1;
 }
 
+.hover-move-up {
+  transition: transform 0.3s ease; /* hiệu ứng mượt */
+}
+
+.hover-move-up:hover {
+  transform: translateY(-3px); /* dịch chuyển lên 3px */
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;

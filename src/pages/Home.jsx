@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import URL from "../components/API";
+import { toast } from "react-toastify";
+import { FaCheck, FaTrashAlt, FaExclamationTriangle } from "react-icons/fa";
+import { Badge } from "react-bootstrap";
 
 function Home() {
   const [url, setUrl] = useState("");
@@ -8,6 +11,20 @@ function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token !== null) {
+      toast.info(
+        `Xin chào bạn ${
+          JSON.parse(localStorage.getItem("user"))?.username || ""
+        }`
+      );
+      console.log(`User: ${localStorage.getItem("token")}`);
+    } else {
+      toast.error("Vui lòng đăng nhập để sử dụng dịch vụ !");
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -15,7 +32,7 @@ function Home() {
     setResult(null);
 
     if (token === null) {
-      setError("Vui lòng đăng nhập để sử dụng dịch vụ.");
+      toast.error("Vui lòng đăng nhập để sử dụng dịch vụ !");
       setLoading(false);
       return;
     }
@@ -28,7 +45,7 @@ function Home() {
       });
 
       if (res.status !== 200) {
-        setError(res.message || "Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây.");
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây.");
         setLoading(false);
         console.log(res);
         return;
@@ -47,7 +64,10 @@ function Home() {
       setResult(data);
     } catch (err) {
       console.error("Request error:", err);
-      setError("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây.");
+      toast.error(
+        err.response?.data?.message ||
+          "Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây."
+      );
     } finally {
       setLoading(false);
     }
@@ -109,16 +129,16 @@ function Home() {
                     <i className="bi bi-shield-lock-fill me-2 text-primary"></i>
                     <strong>Google Safe Browsing</strong>
                   </span>
-                  <span
-                    className={`badge rounded-pill px-3 py-2 mt-2 mt-md-0 ${
-                      result.googleSafeBrowsing?.includes("An toàn")
-                        ? "bg-success"
-                        : "bg-danger"
-                    }`}
-                  >
-                    {result.googleSafeBrowsing?.includes("An toàn")
-                      ? "An toàn"
-                      : "Nguy hiểm"}
+                  <span>
+                    {result.googleSafeBrowsing?.includes("An toàn") ? (
+                      <Badge className="border rounded-4 " bg="success">
+                        <FaCheck /> An toàn
+                      </Badge>
+                    ) : (
+                      <Badge className="border rounded-4" bg="danger">
+                        <FaExclamationTriangle /> Không an toàn
+                      </Badge>
+                    )}
                   </span>
                 </div>
               </div>
@@ -150,19 +170,23 @@ function Home() {
                             <tr>
                               <td
                                 className={
-                                  stats.malicious > 0 ? "table-danger" : ""
+                                  stats.malicious > 0
+                                    ? "bg-danger text-white"
+                                    : ""
                                 }
                               >
                                 {stats.malicious}{" "}
                               </td>
                               <td
                                 className={
-                                  stats.suspicious > 0 ? "table-warning" : ""
+                                  stats.suspicious > 0
+                                    ? "bg-warning text-black"
+                                    : ""
                                 }
                               >
                                 {stats.suspicious}
                               </td>
-                              <td className="table-success">
+                              <td className="bg-success text-white">
                                 {stats.harmless}
                               </td>
                               <td>{stats.undetected}</td>

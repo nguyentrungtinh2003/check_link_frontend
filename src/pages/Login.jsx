@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import URL from "../components/API";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify"; // ✅ phải lấy từ react-toastify
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -38,9 +39,8 @@ const Login = () => {
         username: formData.username,
         password: formData.password,
       });
-      setSuccess("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công !");
       localStorage.setItem("user", JSON.stringify(response.data.data));
-      console.log("Login response:", response.data);
 
       // Lưu token hoặc user info vào localStorage (nếu backend trả về)
       if (response.data.token) {
@@ -48,9 +48,11 @@ const Login = () => {
       }
 
       setFormData({ username: "", password: "" });
-      window.location.href = "/"; // Chuyển hướng đến trang chủ
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Đăng nhập thất bại!");
+      toast.error(err.response?.data?.message || "Đăng nhập thất bại");
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,10 @@ const Login = () => {
       className="d-flex justify-content-center align-items-center"
       style={{ marginTop: "80px" }}
     >
-      <Card className="p-4 shadow-lg" style={{ width: "400px" }}>
+      <Card
+        className="p-4 shadow-lg border rounded-4 border-2 border-primary"
+        style={{ width: "400px" }}
+      >
         <h3 className="text-center mb-4">Đăng nhập</h3>
 
         {error && <Alert variant="danger">{error}</Alert>}
@@ -74,6 +79,7 @@ const Login = () => {
               type="text"
               placeholder="Nhập tên đăng nhập"
               name="username"
+              className="border rounded-4"
               value={formData.username}
               onChange={handleChange}
               required
@@ -87,12 +93,14 @@ const Login = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Nhập mật khẩu"
                 name="password"
+                className="border rounded-4"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
               <Button
-                variant="outline-secondary"
+                variant="primary"
+                className="ms-2 rounded-4"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -103,7 +111,7 @@ const Login = () => {
           <Button
             variant="primary"
             type="submit"
-            className="w-100"
+            className="w-100 border rounded-4"
             disabled={loading}
           >
             {loading ? <Spinner animation="border" size="sm" /> : "Đăng nhập"}

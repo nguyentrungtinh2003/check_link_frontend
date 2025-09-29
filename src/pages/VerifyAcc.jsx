@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import URL from "../components/API";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const VerifyAcc = () => {
   const [formData, setFormData] = useState({
@@ -34,13 +35,16 @@ const VerifyAcc = () => {
 
     try {
       const res = await axios.post(`${URL}/auth/verify-acc`, formData);
-      setSuccess(res.data.message || "Xác thực tài khoản thành công !");
+      toast.success("Xác thực tài khoản thành công !");
       setFormData({ email: "", otp: "" });
       setTimeout(() => {
         window.location.href = "/auth/login";
       }, 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Xác thực tài khoản thất bại!");
+      toast.error(
+        err.response?.data?.message ||
+          "Xác thực tài khoản thất bại, vui lòng thử lại sau !"
+      );
     } finally {
       setLoading(false);
     }
@@ -51,7 +55,10 @@ const VerifyAcc = () => {
       className="d-flex justify-content-center align-items-center"
       style={{ marginTop: "80px" }}
     >
-      <Card className="p-4 shadow-lg" style={{ width: "400px" }}>
+      <Card
+        className="p-4 shadow-lg border rounded-4 border-2 border-primary"
+        style={{ width: "400px" }}
+      >
         <h3 className="text-center mb-4">Xác thực tài khoản</h3>
 
         {error && <Alert variant="danger">{error}</Alert>}
@@ -64,6 +71,7 @@ const VerifyAcc = () => {
               type="email"
               placeholder="Nhập email"
               name="email"
+              className="border rounded-4"
               value={formData.email}
               onChange={handleChange}
               required
@@ -76,6 +84,7 @@ const VerifyAcc = () => {
               type="text"
               placeholder="Nhập mã OTP"
               name="otp"
+              className="border rounded-4"
               value={formData.otp}
               onChange={handleChange}
               required
@@ -102,7 +111,11 @@ const VerifyAcc = () => {
             </InputGroup>
           </Form.Group> */}
 
-          <Button type="submit" className="w-100" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-100 border rounded-4"
+            disabled={loading}
+          >
             {loading ? (
               <Spinner animation="border" size="sm" />
             ) : (

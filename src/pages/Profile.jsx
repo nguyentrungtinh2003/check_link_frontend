@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import URL from "../components/API";
+import { toast } from "react-toastify"; // ✅ phải lấy từ react-toastify
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -18,6 +19,8 @@ function Profile() {
         email: storedUser.email,
       });
     }
+
+    toast.info(`Xin chào bạn ${storedUser?.username}`);
   }, []);
 
   if (!user) return <p className="text-center mt-5">Chưa có user</p>;
@@ -40,9 +43,11 @@ function Profile() {
         },
       })
       .then((response) => {
+        toast.success("Cập nhật thông tin thành công !");
         console.log("User updated:", response.data);
       })
       .catch((err) => {
+        toast.error("Lỗi khi cập nhật thông tin !");
         console.error("Lỗi khi cập nhật user:", err);
       });
 
@@ -51,7 +56,10 @@ function Profile() {
 
   return (
     <div className="container d-flex justify-content-center mt-5">
-      <Card style={{ width: "22rem" }} className="shadow-lg border-0 rounded-3">
+      <Card
+        style={{ width: "22rem" }}
+        className="shadow-lg border rounded-4 border-2 border-primary"
+      >
         <Card.Img
           variant="top"
           src="https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
@@ -67,7 +75,11 @@ function Profile() {
             <>
               <Card.Title className="fw-bold fs-4">{user.username}</Card.Title>
               <Card.Text className="text-muted">{user.email}</Card.Text>
-              <Button variant="primary" onClick={() => setIsEditing(true)}>
+              <Button
+                variant="primary"
+                className="border rounded-4"
+                onClick={() => setIsEditing(true)}
+              >
                 Cập nhật
               </Button>
             </>
@@ -88,16 +100,25 @@ function Profile() {
                   <Form.Control
                     type="email"
                     name="email"
+                    className="border rounded-4"
                     value={formData.email}
                     onChange={handleChange}
                   />
                 </Form.Group>
               </Form>
               <div className="d-flex justify-content-between">
-                <Button variant="primary" onClick={handleSave}>
+                <Button
+                  variant="primary"
+                  onClick={handleSave}
+                  className="border rounded-4"
+                >
                   Lưu
                 </Button>
-                <Button variant="danger" onClick={() => setIsEditing(false)}>
+                <Button
+                  variant="danger"
+                  onClick={() => setIsEditing(false)}
+                  className="border rounded-4"
+                >
                   Huỷ
                 </Button>
               </div>

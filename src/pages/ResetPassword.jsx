@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import URL from "../components/API";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -35,13 +36,16 @@ const ResetPassword = () => {
 
     try {
       const res = await axios.post(`${URL}/auth/reset-password`, formData);
-      setSuccess(res.data.message || "Đặt lại mật khẩu thành công!");
+      toast.success("Đặt lại mật khẩu thành công !");
       setFormData({ email: "", otp: "", newPassword: "" });
       setTimeout(() => {
         window.location.href = "/auth/login";
       }, 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Đặt lại mật khẩu thất bại!");
+      toast.error(
+        err.response?.data?.message ||
+          "Đặt lại mật khẩu thất bại, vui lòng thử lại sau !"
+      );
     } finally {
       setLoading(false);
     }
@@ -52,7 +56,10 @@ const ResetPassword = () => {
       className="d-flex justify-content-center align-items-center"
       style={{ marginTop: "80px" }}
     >
-      <Card className="p-4 shadow-lg" style={{ width: "400px" }}>
+      <Card
+        className="p-4 shadow-lg border rounded-4 border-2 border-primary"
+        style={{ width: "400px" }}
+      >
         <h3 className="text-center mb-4">Đặt lại mật khẩu</h3>
 
         {error && <Alert variant="danger">{error}</Alert>}
@@ -65,6 +72,7 @@ const ResetPassword = () => {
               type="email"
               placeholder="Nhập email"
               name="email"
+              className="border rounded-4"
               value={formData.email}
               onChange={handleChange}
               required
@@ -77,6 +85,7 @@ const ResetPassword = () => {
               type="text"
               placeholder="Nhập mã OTP"
               name="otp"
+              className="border rounded-4"
               value={formData.otp}
               onChange={handleChange}
               required
@@ -90,12 +99,14 @@ const ResetPassword = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Nhập mật khẩu mới"
                 name="newPassword"
+                className="border rounded-4"
                 value={formData.newPassword}
                 onChange={handleChange}
                 required
               />
               <Button
-                variant="outline-secondary"
+                variant="primary"
+                className="ms-2 rounded-4"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -103,7 +114,11 @@ const ResetPassword = () => {
             </InputGroup>
           </Form.Group>
 
-          <Button type="submit" className="w-100" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-100 border rounded-4"
+            disabled={loading}
+          >
             {loading ? (
               <Spinner animation="border" size="sm" />
             ) : (

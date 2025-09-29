@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import URL from "../components/API";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify"; // ✅ phải lấy từ react-toastify
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       });
-      setSuccess("Đăng ký thành công, vui lòng kiểm tra email để xác thực !");
+
       console.log(response.data);
       setFormData({
         username: "",
@@ -58,11 +59,16 @@ const Register = () => {
         confirmPassword: "",
       });
       localStorage.setItem("email-verifyacc", formData.email);
+
+      toast.success(
+        "Đăng ký thành công, vui lòng kiểm tra email để nhận OTP !"
+      );
       setTimeout(() => {
         window.location.href = "/auth/verify-acc";
       }, 3000);
     } catch (err) {
-      setError(err.response?.data?.message || "Đăng ký thất bại!");
+      toast.error(err.response?.data?.message || "Đăng ký thất bại");
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -73,7 +79,10 @@ const Register = () => {
       className="d-flex justify-content-center align-items-center"
       style={{ marginTop: "80px" }}
     >
-      <Card className="p-4 shadow-lg" style={{ width: "400px" }}>
+      <Card
+        className="p-4 shadow-lg border rounded-4 border-2 border-primary"
+        style={{ width: "400px" }}
+      >
         <h3 className="text-center mb-4">Đăng ký</h3>
 
         {error && <Alert variant="danger">{error}</Alert>}
@@ -86,6 +95,7 @@ const Register = () => {
               type="text"
               placeholder="Nhập tên đăng nhập"
               name="username"
+              className="border rounded-4"
               value={formData.username}
               onChange={handleChange}
               required
@@ -98,6 +108,7 @@ const Register = () => {
               type="email"
               placeholder="Nhập email thật, vì có bước xác thực OTP"
               name="email"
+              className="border rounded-4"
               value={formData.email}
               onChange={handleChange}
               required
@@ -112,12 +123,14 @@ const Register = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Nhập mật khẩu"
                 name="password"
+                className="border rounded-4"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
               <Button
-                variant="outline-secondary"
+                variant="primary"
+                className="ms-2 rounded-4"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -133,12 +146,14 @@ const Register = () => {
                 type={showConfirm ? "text" : "password"}
                 placeholder="Nhập lại mật khẩu"
                 name="confirmPassword"
+                className="border rounded-4"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
               />
               <Button
-                variant="outline-secondary"
+                variant="primary"
+                className="ms-2 rounded-4"
                 onClick={() => setShowConfirm(!showConfirm)}
               >
                 {showConfirm ? <FaEyeSlash /> : <FaEye />}
@@ -149,7 +164,7 @@ const Register = () => {
           <Button
             variant="primary"
             type="submit"
-            className="w-100"
+            className="w-100 border rounded-4"
             disabled={loading}
           >
             {loading ? <Spinner animation="border" size="sm" /> : "Đăng ký"}

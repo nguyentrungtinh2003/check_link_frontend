@@ -8,15 +8,50 @@ import {
   Badge,
   Button,
   Form,
+  InputGroup,
 } from "react-bootstrap";
 import axios from "axios";
 import URL from "../components/API";
-
+import { toast } from "react-toastify"; // ✅ phải lấy từ react-toastify
+import {
+  FaCheck,
+  FaTrashAlt,
+  FaExclamationTriangle,
+  FaSearch,
+} from "react-icons/fa";
+import { Pagination } from "react-bootstrap";
 const History = () => {
   const [histories, setHistories] = useState([]);
   const [rawHistories, setRawHistories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(6);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const prevPage = () => {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+  };
+
+  const nextPage = () => {
+    if (page < totalPages - 1) {
+      setPage(page + 1);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [page, size]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(0);
+    fetchHistory();
+  };
 
   const cellStyle = {
     maxWidth: "200px",
@@ -28,50 +63,59 @@ const History = () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) {
-        setError("Bạn chưa đăng nhập !");
+        toast.error("Vui lòng đăng nhập để xem lịch sử");
         setLoading(false);
         return;
       }
 
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${URL}/history/user/${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${URL}/history/user/${user.id}?keyword=${query}&page=${page}&size=${size}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const historyData = response.data.data;
-      const history = historyData.reverse();
+      const historyData = response.data.data.content;
+      setTotalPages(response.data.data.totalPages);
+      setPage(response.data.data.pageable.pageNumber);
 
-      setRawHistories(history || []);
-      setHistories(history || []);
+      setHistories(historyData || []);
     } catch (err) {
-      setError("Không thể tải lịch sử, vui lòng thử lại sau 30 giây !");
+      toast.error("Không thể lấy lịch sử, vui lòng thử lại sau 30 giây !");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchHistory();
-  }, []);
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
-  const [query, setQuery] = useState("");
+  useEffect(() => {
+    if (!loading && !error && histories?.length === 0) {
+      toast.info("Không có lịch sử kiểm tra URL nào");
+    }
+  }, [loading, error, histories]);
 
   const handleChange = (e) => {
     setQuery(e.target.value);
   };
 
-  useEffect(() => {
-    if (!query) {
-      setHistories(rawHistories);
-    }
+  // useEffect(() => {
+  //   if (!query) {
+  //     setHistories(rawHistories);
+  //   }
 
-    const filteredHistories = rawHistories.filter((history) =>
-      history.urlCheck.toLowerCase().includes(query.toLowerCase())
-    );
-    setHistories(filteredHistories);
-  }, [query]);
+  //   const filteredHistories = rawHistories.filter((history) =>
+  //     history.urlCheck.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setHistories(filteredHistories);
+  // }, [query]);
 
   const deleteHistory = async (id) => {
     const confirmDelete = window.confirm("Bạn có chắc muốn xoá lịch sử này ?");
@@ -84,52 +128,51 @@ const History = () => {
         },
       });
 
+      toast.success("Xoá lịch sử thành công !");
       fetchHistory();
     } catch (error) {
-      setError("Không thể xoá lịch sử, vui lòng thử lại sau 30 giây !");
+      toast.error("Xoá lịch sử thất bại, vui lòng thử lại sau 30 giây!");
     }
   };
 
   return (
     <Container style={{ marginTop: "80px" }}>
       <Card
-        className="p-4 shadow-lg"
-        style={{ maxHeight: "550px", overflowY: "auto" }}
+        className="p-4 shadow-lg border rounded-4 border-2 border-primary"
+        style={{ maxHeight: "650px", overflowY: "auto" }}
       >
         <h3 className="mb-4 text-center">Lịch sử kiểm tra URL</h3>
 
         {loading && (
           <div className="text-center">
-            <Spinner animation="border" />
+            <Spinner variant="primary" animation="border" />
           </div>
         )}
 
-        {error && <Alert variant="danger">{error}</Alert>}
+        {/* {error && <Alert variant="danger">{error}</Alert>}
 
         {!loading && !error && histories?.length === 0 && (
           <Alert variant="info">Không có lịch sử nào</Alert>
-        )}
+        )} */}
 
         <Form>
-          {/* <Form.Group className="mb-3">
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
-                </Form.Group> */}
-          <Form.Group className="mb-3">
-            <Form.Label>Tìm kiếm</Form.Label>
+          <InputGroup className="mb-3">
             <Form.Control
               type="search"
               name="search"
               placeholder="Nhập URL cần tìm..."
               value={query}
               onChange={handleChange}
+              className="border rounded-4"
             />
-          </Form.Group>
+            <Button
+              variant="primary"
+              onClick={handleSearch}
+              className="border rounded-4 ms-2"
+            >
+              <FaSearch />
+            </Button>
+          </InputGroup>
         </Form>
 
         {!loading && histories?.length > 0 && (
@@ -163,15 +206,29 @@ const History = () => {
                     {h.userAgent}
                   </td> */}
                   <td style={cellStyle} title={h.googleSafeBrowsing}>
-                    {h.googleSafeBrowsing}
+                    {h.googleSafeBrowsing.includes("An toàn") ? (
+                      <Badge className="border rounded-4" bg="success">
+                        <FaCheck /> An toàn
+                      </Badge>
+                    ) : (
+                      <Badge className="border rounded-4" bg="danger">
+                        <FaExclamationTriangle /> Không an toàn
+                      </Badge>
+                    )}
                   </td>
                   <td
                     style={cellStyle}
                     title={h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
                   >
-                    <Badge bg={h.virusTotal?.malicious ? "danger" : "success"}>
-                      {h.virusTotal?.malicious ? "Nguy hiểm" : "An toàn"}
-                    </Badge>
+                    {h.virusTotal?.malicious ? (
+                      <Badge className="border rounded-4" bg="danger">
+                        <FaExclamationTriangle /> Không an toàn
+                      </Badge>
+                    ) : (
+                      <Badge className="border rounded-4" bg="success">
+                        <FaCheck /> An toàn
+                      </Badge>
+                    )}
                   </td>
                   <td
                     style={cellStyle}
@@ -183,9 +240,10 @@ const History = () => {
                     <Button
                       variant="danger"
                       size="sm"
+                      className="border rounded-4"
                       onClick={() => deleteHistory(h.id)}
                     >
-                      Xoá
+                      <FaTrashAlt />
                     </Button>
                   </td>
                 </tr>
@@ -193,6 +251,11 @@ const History = () => {
             </tbody>
           </Table>
         )}
+        <Pagination className="justify-content-center mt-3">
+          <Pagination.Prev onClick={prevPage} />
+          <Pagination.Item disabled>{page + 1}</Pagination.Item>
+          <Pagination.Next onClick={nextPage} />
+        </Pagination>
       </Card>
     </Container>
   );
