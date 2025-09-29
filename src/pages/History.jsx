@@ -252,9 +252,12 @@ const History = () => {
           </Table>
         )}
         <Pagination className="justify-content-center mt-3">
-          <Pagination.Prev onClick={prevPage} />
+          <Pagination.Prev onClick={prevPage} disabled={page === 0} />
           <Pagination.Item disabled>{page + 1}</Pagination.Item>
-          <Pagination.Next onClick={nextPage} />
+          <Pagination.Next
+            onClick={nextPage}
+            disabled={page >= totalPages - 1}
+          />
         </Pagination>
       </Card>
     </Container>

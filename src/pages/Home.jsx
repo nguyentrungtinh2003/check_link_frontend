@@ -21,7 +21,7 @@ function Home() {
       );
       console.log(`User: ${localStorage.getItem("token")}`);
     } else {
-      toast.error("Vui lòng đăng nhập để sử dụng dịch vụ !");
+      toast.info("Vui lòng đăng nhập để sử dụng dịch vụ");
     }
   }, []);
 
@@ -32,7 +32,7 @@ function Home() {
     setResult(null);
 
     if (token === null) {
-      toast.error("Vui lòng đăng nhập để sử dụng dịch vụ !");
+      toast.info("Vui lòng đăng nhập để sử dụng dịch vụ");
       setLoading(false);
       return;
     }
@@ -45,7 +45,7 @@ function Home() {
       });
 
       if (res.status !== 200) {
-        toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây.");
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây");
         setLoading(false);
         console.log(res);
         return;
@@ -66,7 +66,7 @@ function Home() {
       console.error("Request error:", err);
       toast.error(
         err.response?.data?.message ||
-          "Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây."
+          "Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây"
       );
     } finally {
       setLoading(false);

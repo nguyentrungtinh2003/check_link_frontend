@@ -9,6 +9,7 @@ function Navbar() {
     const storedUser = JSON.parse(localStorage.getItem("user")); // lấy username từ localStorage
     if (storedUser) {
       setUsername(storedUser.username);
+      console.log("User from localStorage:", storedUser);
     }
   }, []);
 
@@ -49,7 +50,14 @@ function Navbar() {
 
               <Dropdown.Menu>
                 <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
-                <Dropdown.Item href="/history">Lịch sử</Dropdown.Item>
+                <Dropdown.Item href="/history">
+                  Lịch sử kiểm tra URL
+                </Dropdown.Item>
+                {JSON.parse(localStorage.getItem("user"))?.role === "ADMIN" && (
+                  <Dropdown.Item href="/auth/admin/user">
+                    Quản trị người dùng
+                  </Dropdown.Item>
+                )}
                 <Dropdown.Item className="text-danger" onClick={Logout}>
                   Đăng xuất
                 </Dropdown.Item>

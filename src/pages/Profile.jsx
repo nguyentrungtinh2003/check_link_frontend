@@ -75,6 +75,7 @@ function Profile() {
             <>
               <Card.Title className="fw-bold fs-4">{user.username}</Card.Title>
               <Card.Text className="text-muted">{user.email}</Card.Text>
+              <Card.Text className="text-muted">{user.role}</Card.Text>
               <Button
                 variant="primary"
                 className="border rounded-4"

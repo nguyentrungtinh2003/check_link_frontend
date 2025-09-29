@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import SendOTP from "./pages/SendOTP";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyAcc from "./pages/VerifyAcc";
+import User from "./pages/User";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -57,6 +58,17 @@ function App() {
           <Route path="/auth/send-otp" element={<SendOTP />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/verify-acc" element={<VerifyAcc />} />
+
+          <Route
+            path="/auth/admin/user"
+            element={
+              JSON.parse(localStorage.getItem("user"))?.role === "ADMIN" ? (
+                <User />
+              ) : (
+                <Home />
+              )
+            }
+          />
         </Routes>
       </div>
     </Router>
