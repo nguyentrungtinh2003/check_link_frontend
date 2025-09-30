@@ -20,6 +20,7 @@ import {
   FaSearch,
   FaUndo,
   FaTimes,
+  FaPenAlt,
 } from "react-icons/fa";
 
 const User = () => {
@@ -134,6 +135,9 @@ const User = () => {
                 <th>Tên đăng nhập</th>
                 <th>Email</th>
                 <th>Vai trò</th>
+
+                <th>Ngày tham gia</th>
+                <th>Ngày cập nhật</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
@@ -150,35 +154,66 @@ const User = () => {
                   </td>
                   <td>
                     {u.role === "ADMIN" ? (
-                      <Badge bg="primary">ADMIN</Badge>
+                      <Badge bg="primary" className="rounded-4">
+                        ADMIN
+                      </Badge>
                     ) : (
-                      <Badge bg="success">USER</Badge>
+                      <Badge bg="success" className="rounded-4">
+                        USER
+                      </Badge>
                     )}
+                  </td>
+                  <td
+                    style={cellStyle}
+                    title={new Date(u.createdAt).toLocaleString()}
+                  >
+                    {new Date(u.createdAt).toLocaleString()}
+                  </td>
+                  <td
+                    style={cellStyle}
+                    title={new Date(u.updatedAt).toLocaleString()}
+                  >
+                    {new Date(u.updatedAt).toLocaleString()}
                   </td>
                   <td>
                     {" "}
                     {u.active ? (
-                      <Badge bg="success">Đang hoạt động</Badge>
+                      <Badge bg="success" className="rounded-4">
+                        Đang hoạt động
+                      </Badge>
                     ) : (
-                      <Badge bg="danger">Bị vô hiệu hoá</Badge>
+                      <Badge bg="danger" className="rounded-4">
+                        Bị vô hiệu hoá
+                      </Badge>
                     )}
                   </td>
+
                   <td>
+                    <Button
+                      variant="warning"
+                      className="rounded-4 m-2"
+                      size="sm"
+                      href={`/profile/${u.id}`}
+                    >
+                      <FaPenAlt />
+                    </Button>
                     {u.active ? (
                       <Button
                         variant="danger"
+                        className="rounded-4"
                         size="sm"
                         onClick={() => toggleDeleteUser(u.id, u.active)}
                       >
-                        <FaTrashAlt /> Xoá
+                        <FaTrashAlt />
                       </Button>
                     ) : (
                       <Button
                         variant="primary"
+                        className="rounded-4"
                         size="sm"
                         onClick={() => toggleDeleteUser(u.id, u.active)}
                       >
-                        <FaUndo /> Khôi phục
+                        <FaUndo />
                       </Button>
                     )}
                   </td>

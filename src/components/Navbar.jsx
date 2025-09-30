@@ -49,7 +49,13 @@ function Navbar() {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
+                <Dropdown.Item
+                  href={`/profile/${
+                    JSON.parse(localStorage.getItem("user"))?.id
+                  }`}
+                >
+                  Thông tin cá nhân
+                </Dropdown.Item>
                 <Dropdown.Item href="/history">
                   Lịch sử kiểm tra URL
                 </Dropdown.Item>

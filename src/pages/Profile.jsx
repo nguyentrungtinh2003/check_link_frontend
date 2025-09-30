@@ -2,56 +2,82 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import URL from "../components/API";
-import { toast } from "react-toastify"; // ✅ phải lấy từ react-toastify
+import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 function Profile() {
+  const { id } = useParams();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ username: "", email: "" });
 
   useEffect(() => {
-    // Lấy user trong localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-      setFormData({
-        username: storedUser.username,
-        email: storedUser.email,
-      });
+    if (!id) {
+      setLoading(false);
+      // Lấy user trong localStorage
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        setUser(storedUser);
+        setFormData({
+          username: storedUser?.username,
+          email: storedUser?.email,
+        });
+        toast.info(`Xin chào bạn ${storedUser.username}`);
+      }
+    } else {
+      // Lấy user từ API nếu có id trong URL
+      setLoading(true);
+      axios
+        .get(`${URL}/user/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+        .then((response) => {
+          setUser(response.data.data);
+          setFormData({
+            username: response.data.data.username,
+            email: response.data.data.email,
+          });
+          setLoading(false);
+        })
+        .catch(() => {
+          toast.error("Lỗi khi lấy thông tin người dùng");
+          setLoading(false);
+        });
     }
+  }, [id]);
 
-    toast.info(`Xin chào bạn ${storedUser?.username}`);
-  }, []);
+  // if (!user) {
+  //   return <p className="text-center mt-5">Chưa có user</p>;
+  // }
 
-  if (!user) return <p className="text-center mt-5">Chưa có user</p>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-2">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
-  // Xử lý thay đổi input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Lưu thay đổi
   const handleSave = () => {
-    const updatedUser = { ...user, ...formData };
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-
     axios
-      .put(`${URL}/user/update/${user.id}`, updatedUser, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      .put(`${URL}/user/update/${user.id}`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
         toast.success("Cập nhật thông tin thành công !");
-        console.log("User updated:", response.data);
+        setIsEditing(false);
+        setUser(response.data.data);
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Lỗi khi cập nhật thông tin !");
-        console.error("Lỗi khi cập nhật user:", err);
       });
-
-    setIsEditing(false);
   };
 
   return (
@@ -73,9 +99,17 @@ function Profile() {
         <Card.Body className="text-center">
           {!isEditing ? (
             <>
-              <Card.Title className="fw-bold fs-4">{user.username}</Card.Title>
-              <Card.Text className="text-muted">{user.email}</Card.Text>
-              <Card.Text className="text-muted">{user.role}</Card.Text>
+              <Card.Title className="fw-bold fs-4">{user?.username}</Card.Title>
+              <Card.Text className="text-muted">{user?.email}</Card.Text>
+              <Card.Text className="text-muted">
+                Ngày tham gia: {new Date(user?.createdAt).toLocaleString()}
+              </Card.Text>
+              <Card.Text className="text-muted">
+                {user?.active ? "Đang hoạt động" : "Bị vô hiệu hoá"}
+              </Card.Text>
+              <Card.Text className="text-muted">
+                Vai trò: {user?.role}
+              </Card.Text>
               <Button
                 variant="primary"
                 className="border rounded-4"
@@ -87,15 +121,15 @@ function Profile() {
           ) : (
             <>
               <Form>
-                {/* <Form.Group className="mb-3">
-                  <Form.Label>Username</Form.Label>
+                <Form.Group className="mb-3">
+                  <Form.Label>Tên đăng nhập</Form.Label>
                   <Form.Control
                     type="text"
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
                   />
-                </Form.Group> */}
+                </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control

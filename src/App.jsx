@@ -54,7 +54,7 @@ function App() {
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/history" element={<History />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
           <Route path="/auth/send-otp" element={<SendOTP />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/verify-acc" element={<VerifyAcc />} />
