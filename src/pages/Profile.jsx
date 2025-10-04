@@ -40,8 +40,10 @@ function Profile() {
           });
           setLoading(false);
         })
-        .catch(() => {
-          toast.error("Lỗi khi lấy thông tin người dùng");
+        .catch((error) => {
+          toast.error(
+            error.response?.data?.message || "Lỗi khi tải thông tin người dùng"
+          );
           setLoading(false);
         });
     }

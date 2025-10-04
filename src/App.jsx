@@ -8,7 +8,8 @@ import Profile from "./pages/Profile";
 import SendOTP from "./pages/SendOTP";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyAcc from "./pages/VerifyAcc";
-import User from "./pages/User";
+import UserManagement from "./pages/UserManagement";
+import HistoryManagement from "./pages/Historymanagement";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -63,7 +64,17 @@ function App() {
             path="/auth/admin/user"
             element={
               JSON.parse(localStorage.getItem("user"))?.role === "ADMIN" ? (
-                <User />
+                <UserManagement />
+              ) : (
+                <Home />
+              )
+            }
+          />
+          <Route
+            path="/auth/admin/history"
+            element={
+              JSON.parse(localStorage.getItem("user"))?.role === "ADMIN" ? (
+                <HistoryManagement />
               ) : (
                 <Home />
               )

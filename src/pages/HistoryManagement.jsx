@@ -20,7 +20,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import { Pagination } from "react-bootstrap";
-const History = () => {
+const HistoryManagement = () => {
   const [histories, setHistories] = useState([]);
   const [rawHistories, setRawHistories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,7 @@ const History = () => {
 
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${URL}/history/user/${user.id}?keyword=${query}&page=${page}&size=${size}`,
+        `${URL}/history/page?keyword=${query}&page=${page}&size=${size}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -141,10 +141,7 @@ const History = () => {
         className="p-4 shadow-lg border rounded-4 border-2 border-primary"
         style={{ maxHeight: "650px", overflowY: "auto" }}
       >
-        <h3 className="mb-4 text-center">
-          Lịch sử kiểm tra URL của{" "}
-          {JSON.parse(localStorage.getItem("user"))?.username}
-        </h3>
+        <h3 className="mb-4 text-center">Lịch sử kiểm tra URL hệ thống</h3>
 
         {loading && (
           <div className="text-center">
@@ -184,16 +181,25 @@ const History = () => {
               <tr>
                 <th>#</th>
                 <th>URL</th>
-                {/* <th>IP</th>
-                <th>User Agent</th> */}
+
                 <th>Google Safe Browsing</th>
                 <th>VirusTotal PhishTank</th>
                 <th>Thời gian</th>
+                <th>IP</th>
+                <th>User-Agent</th>
+                <th>Người dùng</th>
                 <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
               {histories?.map((h, index) => {
+                const cellStyle = {
+                  maxWidth: "200px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                };
+
                 let vtData;
                 try {
                   vtData = JSON.parse(h.virusTotal); // parse JSON
@@ -240,10 +246,21 @@ const History = () => {
 
                     {/* Thời gian */}
                     <td
-                      style={cellStyle}
+                      // style={cellStyle}
                       title={new Date(h.createdAt).toLocaleString()}
                     >
                       {new Date(h.createdAt).toLocaleString()}
+                    </td>
+                    <td style={cellStyle} title={h.ipAddress}>
+                      <span>{h.ipAddress}</span>
+                    </td>
+                    <td title={h.userAgent}>
+                      <span>{h.userAgent}</span>
+                    </td>
+                    <td>
+                      <span style={cellStyle} title={h.user?.username}>
+                        {h.user?.username || "Khách"}
+                      </span>
                     </td>
 
                     {/* Xoá */}
@@ -278,4 +295,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default HistoryManagement;

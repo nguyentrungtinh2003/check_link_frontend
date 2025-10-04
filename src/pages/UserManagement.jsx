@@ -224,7 +224,9 @@ const User = () => {
         )}
         <Pagination className="justify-content-center mt-3">
           <Pagination.Prev onClick={prevPage} disabled={page === 0} />
-          <Pagination.Item disabled>{page + 1}</Pagination.Item>
+          <Pagination.Item disabled>
+            {page + 1} / {totalPages}
+          </Pagination.Item>
           <Pagination.Next
             onClick={nextPage}
             disabled={page >= totalPages - 1}

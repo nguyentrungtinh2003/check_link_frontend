@@ -64,6 +64,11 @@ function Navbar() {
                     Quản trị người dùng
                   </Dropdown.Item>
                 )}
+                {JSON.parse(localStorage.getItem("user"))?.role === "ADMIN" && (
+                  <Dropdown.Item href="/auth/admin/history">
+                    Quản trị lịch sử
+                  </Dropdown.Item>
+                )}
                 <Dropdown.Item className="text-danger" onClick={Logout}>
                   Đăng xuất
                 </Dropdown.Item>

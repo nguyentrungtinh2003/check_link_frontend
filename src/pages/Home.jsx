@@ -21,7 +21,7 @@ function Home() {
       );
       console.log(`User: ${localStorage.getItem("token")}`);
     } else {
-      toast.info("Vui lòng đăng nhập để sử dụng dịch vụ");
+      toast.info("Vui lòng đăng nhập để sử dụng");
     }
   }, []);
 
@@ -32,7 +32,7 @@ function Home() {
     setResult(null);
 
     if (token === null) {
-      toast.info("Vui lòng đăng nhập để sử dụng dịch vụ");
+      toast.info("Vui lòng đăng nhập để sử dụng");
       setLoading(false);
       return;
     }
@@ -155,6 +155,9 @@ function Home() {
                     if (!vt || !vt.stats) return <p>Không có dữ liệu</p>;
 
                     const stats = vt.stats;
+                    const results = vt.results || {};
+                    if (Object.keys(results).length === 0)
+                      return <p>Không có dữ liệu</p>;
                     return (
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered text-center mt-3">
@@ -193,6 +196,35 @@ function Home() {
                             </tr>
                           </tbody>
                         </table>
+                        <div className="mt-3">
+                          <h5>Kết quả chi tiết</h5>
+                          {Object.entries(results)
+                            .filter(
+                              ([_, result]) =>
+                                result.result !== "clean" &&
+                                result.result !== "harmless" &&
+                                result.result !== "unrated"
+                            )
+                            .map(([key, result]) => (
+                              <div
+                                key={key}
+                                className="d-flex justify-content-between align-items-center border-bottom py-2"
+                              >
+                                <span>{result.engine_name}</span>
+                                <span
+                                  className={
+                                    result.category === "malicious"
+                                      ? "text-danger fw-bold"
+                                      : result.category === "suspicious"
+                                      ? "text-warning fw-bold"
+                                      : "text-success"
+                                  }
+                                >
+                                  {result.result}
+                                </span>
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     );
                   })()}
@@ -208,26 +240,23 @@ function Home() {
                   </span>
                   {(() => {
                     const vt = result.virusTotal;
-                    if (!vt || !vt.results)
-                      return <span>Không có dữ liệu</span>;
+                    if (!vt.results) return <p>Không có dữ liệu</p>;
+                    const results = vt.results;
 
-                    const res =
-                      vt.results["Phishtank"] || vt.results["PhishTank"];
-                    if (!res)
-                      return "Không có dữ liệu. Vui lòng nhấn nút kiểm tra 1 lần nữa";
-
-                    return (
-                      <span
-                        className={`badge rounded-pill px-3 py-2 mt-2 mt-md-0 ${
-                          res.category === "malicious"
-                            ? "bg-danger"
-                            : "bg-success"
-                        }`}
-                      >
-                        {res.category === "malicious"
-                          ? "Có trong danh sách lừa đảo và giả mạo"
-                          : "Không có trong danh sách lừa đảo và giả mạo"}
-                      </span>
+                    return Object.values(results).find(
+                      (result) =>
+                        (result.category === "malicious" ||
+                          result.category === "suspicious") &&
+                        result.result === "phishing"
+                    ) ? (
+                      <Badge className="border rounded-4 " bg="danger">
+                        <FaExclamationTriangle /> Có trong danh sách lừa đảo và
+                        giả mạo
+                      </Badge>
+                    ) : (
+                      <Badge className="border rounded-4 " bg="success">
+                        <FaCheck /> Không có trong danh sách lừa đảo và giả mạo
+                      </Badge>
                     );
                   })()}
                 </div>
