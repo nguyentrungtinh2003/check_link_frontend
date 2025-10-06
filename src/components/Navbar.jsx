@@ -9,7 +9,6 @@ function Navbar() {
     const storedUser = JSON.parse(localStorage.getItem("user")); // lấy username từ localStorage
     if (storedUser) {
       setUsername(storedUser.username);
-      console.log("User from localStorage:", storedUser);
     }
   }, []);
 

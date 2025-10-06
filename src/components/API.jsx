@@ -1,3 +1,2 @@
-const URL = "http://localhost:8081/api";
-
+const URL = "https://check-link-backend.onrender.com/api";
 export default URL;
