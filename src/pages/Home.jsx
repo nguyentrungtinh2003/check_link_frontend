@@ -152,7 +152,13 @@ function Home() {
                   </span>
                   {(() => {
                     const vt = result.virusTotal;
-                    if (!vt || !vt.stats) return <p>Không có dữ liệu</p>;
+                    if (!vt || !vt.stats)
+                      return (
+                        <p>
+                          Không có dữ liệu, Vui lòng nhấn nút kiểm tra 1 lần nữa
+                          !
+                        </p>
+                      );
 
                     const stats = vt.stats;
                     const results = vt.results || {};
