@@ -30,37 +30,64 @@ function Home() {
     setError("");
     setResult(null);
 
-    if (token === null) {
+    if (!token) {
       toast.info("Vui lòng đăng nhập để sử dụng");
       setLoading(false);
       return;
     }
 
     try {
-      const res = await axios.get(`${URL}/check?url=${url.trim()}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      let data;
+      let retryCount = 0;
+      const maxRetries = 5; // tránh lặp vô hạn
 
-      if (res.status !== 200) {
-        toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây");
-        setLoading(false);
-        console.log(res);
-        return;
-      }
+      do {
+        const res = await axios.get(`${URL}/check?url=${url.trim()}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      let data = res.data;
-
-      if (typeof data.virusTotal === "string") {
-        try {
-          data.virusTotal = JSON.parse(data.virusTotal);
-        } catch (e) {
-          console.error("VirusTotal không parse được JSON:", e);
+        if (res.status !== 200) {
+          toast.error("Đã xảy ra lỗi. Vui lòng thử lại sau 30 giây");
+          setLoading(false);
+          return;
         }
-      }
+
+        data = res.data;
+
+        // Nếu VirusTotal trả về chuỗi JSON → parse
+        if (typeof data.virusTotal === "string") {
+          try {
+            data.virusTotal = JSON.parse(data.virusTotal);
+          } catch (e) {
+            console.error("VirusTotal không parse được JSON:", e);
+          }
+        }
+
+        // Kiểm tra xem đã có kết quả thật chưa
+        const waitingForVirusTotal =
+          !data.virusTotal ||
+          !data.virusTotal.results ||
+          Object.keys(data.virusTotal.results).length === 0 ||
+          data.virusTotal.status === "queued";
+
+        if (waitingForVirusTotal) {
+          console.log("⏳ VirusTotal đang xử lý, thử lại sau 5s...");
+          await new Promise((r) => setTimeout(r, 5000));
+        }
+
+        retryCount++;
+      } while (
+        (data.status === "pending" || data.virusTotal.status === "queued") &&
+        retryCount < maxRetries
+      );
 
       setResult(data);
+
+      if (retryCount === maxRetries) {
+        toast.warn("VirusTotal chưa phản hồi, vui lòng thử lại sau ít phút.");
+      }
     } catch (err) {
       console.error("Request error:", err);
       toast.error(
@@ -131,11 +158,11 @@ function Home() {
                   <span>
                     {result.googleSafeBrowsing?.includes("An toàn") ? (
                       <Badge className="border rounded-4 " bg="success">
-                        <FaCheck /> An toàn
+                        An toàn
                       </Badge>
                     ) : (
                       <Badge className="border rounded-4" bg="danger">
-                        <FaExclamationTriangle /> Không an toàn
+                        Không an toàn
                       </Badge>
                     )}
                   </span>
@@ -202,7 +229,6 @@ function Home() {
                           </tbody>
                         </table>
                         <div className="mt-3">
-                          <h5>Kết quả chi tiết</h5>
                           {Object.entries(results)
                             .filter(
                               ([_, result]) =>
@@ -255,12 +281,11 @@ function Home() {
                         result.result === "phishing"
                     ) ? (
                       <Badge className="border rounded-4 " bg="danger">
-                        <FaExclamationTriangle /> Có trong danh sách lừa đảo và
-                        giả mạo
+                        Có trong danh sách lừa đảo và giả mạo
                       </Badge>
                     ) : (
                       <Badge className="border rounded-4 " bg="success">
-                        <FaCheck /> Không có trong danh sách lừa đảo và giả mạo
+                        Không có trong danh sách lừa đảo và giả mạo
                       </Badge>
                     );
                   })()}
