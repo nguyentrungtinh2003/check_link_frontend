@@ -51,7 +51,6 @@ const Register = () => {
         password: formData.password,
       });
 
-      console.log(response.data);
       setFormData({
         username: "",
         email: "",

@@ -189,33 +189,35 @@ const User = () => {
                   </td>
 
                   <td>
-                    <Button
-                      variant="warning"
-                      className="rounded-4 m-2"
-                      size="sm"
-                      href={`/profile/${u.id}`}
-                    >
-                      <FaPenAlt />
-                    </Button>
-                    {u.active ? (
+                    <div className="d-flex">
                       <Button
-                        variant="danger"
-                        className="rounded-4"
+                        variant="warning"
+                        className="rounded-4 m-2"
                         size="sm"
-                        onClick={() => toggleDeleteUser(u.id, u.active)}
+                        href={`/profile/${u.id}`}
                       >
-                        <FaTrashAlt />
+                        <FaPenAlt />
                       </Button>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        className="rounded-4"
-                        size="sm"
-                        onClick={() => toggleDeleteUser(u.id, u.active)}
-                      >
-                        <FaUndo />
-                      </Button>
-                    )}
+                      {u.active ? (
+                        <Button
+                          variant="danger"
+                          className="rounded-4 m-2"
+                          size="sm"
+                          onClick={() => toggleDeleteUser(u.id, u.active)}
+                        >
+                          <FaTrashAlt />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="primary"
+                          className="rounded-4 m-2"
+                          size="sm"
+                          onClick={() => toggleDeleteUser(u.id, u.active)}
+                        >
+                          <FaUndo />
+                        </Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

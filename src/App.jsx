@@ -10,6 +10,7 @@ import ResetPassword from "./pages/ResetPassword";
 import VerifyAcc from "./pages/VerifyAcc";
 import UserManagement from "./pages/UserManagement";
 import HistoryManagement from "./pages/HistoryManagement";
+import Footer from "./components/Footer";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -82,6 +83,7 @@ function App() {
           />
         </Routes>
       </div>
+      <Footer />
     </Router>
   );
 }

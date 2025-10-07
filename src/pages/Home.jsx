@@ -19,7 +19,6 @@ function Home() {
           JSON.parse(localStorage.getItem("user"))?.username || ""
         }`
       );
-      console.log(`User: ${localStorage.getItem("token")}`);
     } else {
       toast.info("Vui lòng đăng nhập để sử dụng");
     }
@@ -271,13 +270,6 @@ function Home() {
           )}
         </div>
       </div>
-      {/* <small className="m-2 d-block text-center mt-3 text-danger front-bold">
-        ⚠️ Mỗi phút bạn chỉ được phép gửi 10 lần
-      </small> */}
-
-      <footer className="text-center py-3 m-2 border-top">
-        <p className="mb-0">© 2025 Bản quyền thuộc về Trung Tính Dev</p>
-      </footer>
     </div>
   );
 }
