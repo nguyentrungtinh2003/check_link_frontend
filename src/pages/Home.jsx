@@ -22,8 +22,6 @@ function Home() {
     } else {
       toast.info("Vui lòng đăng nhập để sử dụng");
     }
-    console.log("Token:", token);
-    console.log("User:", localStorage.getItem("user"));
   }, []);
 
   const handleSubmit = async (e) => {
