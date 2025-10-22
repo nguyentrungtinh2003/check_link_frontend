@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import OAuthSuccess from "./pages/OAuthSuccess";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
 import SendOTP from "./pages/SendOTP";
@@ -55,6 +56,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/login" element={<Login />} />
+          <Route path="/login-success" element={<OAuthSuccess />} />
           <Route path="/history" element={<History />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/auth/send-otp" element={<SendOTP />} />

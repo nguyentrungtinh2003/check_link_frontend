@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import URL from "../components/API";
+import URL2 from "../components/API2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify"; // ✅ phải lấy từ react-toastify
 
@@ -56,6 +57,11 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  //--- login google ----
+  const handleGoogleLogin = () => {
+    window.location.href = `${URL2}/oauth2/authorization/google`;
   };
 
   return (
@@ -116,6 +122,23 @@ const Login = () => {
           >
             {loading ? <Spinner animation="border" size="sm" /> : "Đăng nhập"}
           </Button>
+          <div className="text-center mt-3">
+            <p className="text-lg mb-2">Hoặc</p>
+            <Button
+              variant="light"
+              onClick={handleGoogleLogin}
+              className="d-flex align-items-center justify-content-center border rounded-pill py-2 w-100"
+            >
+              <img
+                src="/google-ico.svg"
+                alt="Google logo"
+                width="20"
+                height="20"
+                className="me-3"
+              />
+              <span className="fw-semibold">Đăng nhập với Google</span>
+            </Button>
+          </div>
         </Form>
         {/* Thêm link đăng ký */}
         <div className="text-center mt-3">

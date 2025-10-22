@@ -7,11 +7,26 @@ function MyNavbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-      setUsername(storedUser.username);
-    }
+    const loadUser = () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        setUser(storedUser);
+        setUsername(storedUser.username);
+      } else {
+        setUser(null);
+        setUsername("");
+      }
+    };
+
+    // Gọi ngay khi mount
+    loadUser();
+
+    // Theo dõi khi localStorage thay đổi (ví dụ khi login xong)
+    window.addEventListener("storage", loadUser);
+
+    return () => {
+      window.removeEventListener("storage", loadUser);
+    };
   }, []);
 
   const Logout = () => {
@@ -51,11 +66,15 @@ function MyNavbar() {
                 >
                   <div className="d-flex align-items-center text-white fw-bold">
                     <img
-                      src="https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
+                      src={
+                        user?.img
+                          ? "/google-ico.svg"
+                          : "https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
+                      }
                       alt="avatar"
                       className="me-2 rounded-circle"
-                      width={40}
-                      height={40}
+                      width={20}
+                      height={20}
                     />
                     {username}
                   </div>
