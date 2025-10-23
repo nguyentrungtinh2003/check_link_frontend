@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Spinner from "react-bootstrap/Spinner";
 import URL from "../components/API";
+import { toast } from "react-toastify";
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
@@ -37,9 +38,8 @@ const OAuthSuccess = () => {
           }, 3000);
         }
       } catch (error) {
-        console.error("OAuth login error:", error);
-        alert("Đăng nhập thất bại! Vui lòng thử lại.");
-        navigate("/login");
+        toast.error("Đăng nhập thất bại! Vui lòng thử lại.");
+        navigate("/auth/login");
       } finally {
         setLoading(false);
       }
