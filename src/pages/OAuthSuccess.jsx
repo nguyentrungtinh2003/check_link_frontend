@@ -30,10 +30,11 @@ const OAuthSuccess = () => {
           localStorage.setItem("user", JSON.stringify(response.data.data));
           window.dispatchEvent(new Event("storage"));
 
+          toast.success("Đăng nhập Google thành công !");
           // Hiển thị spinner 2 giây trước khi chuyển hướng
           setTimeout(() => {
             navigate("/");
-          }, 1000);
+          }, 3000);
         }
       } catch (error) {
         console.error("OAuth login error:", error);
@@ -51,20 +52,12 @@ const OAuthSuccess = () => {
     <div className="d-flex flex-column justify-content-center align-items-center mt-5">
       {loading ? (
         <>
-          <Spinner
-            animation="border"
-            role="status"
-            variant="primary"
-            style={{ width: "4rem", height: "4rem" }}
-          />
-          <span className="mt-3 text-primary fw-semibold fs-5">
-            Đang đăng nhập Google...
-          </span>
+          <div className="text-center">
+            <Spinner variant="primary" animation="border" />
+          </div>
         </>
       ) : (
-        <span className="text-primary fs-4 fw-semibold">
-          Đăng nhập thành công!
-        </span>
+        <h2></h2>
       )}
     </div>
   );

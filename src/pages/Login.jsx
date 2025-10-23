@@ -136,7 +136,7 @@ const Login = () => {
                 height="20"
                 className="me-3"
               />
-              <span className="fw-semibold">Đăng nhập với Google</span>
+              <span className="">Đăng nhập với Google</span>
             </Button>
           </div>
         </Form>

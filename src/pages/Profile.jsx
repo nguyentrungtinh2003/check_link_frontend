@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, Button, Form } from "react-bootstrap";
+import { Card, Button, Form, Spinner } from "react-bootstrap";
 import URL from "../components/API";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
@@ -55,10 +55,8 @@ function Profile() {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center mt-2">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+      <div className="text-center">
+        <Spinner variant="primary" animation="border" />
       </div>
     );
   }
@@ -90,7 +88,11 @@ function Profile() {
       >
         <Card.Img
           variant="top"
-          src="https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
+          src={
+            user?.img
+              ? "/google-ico.svg"
+              : "https://png.pngtree.com/png-clipart/20230512/original/pngtree-hacker-with-a-laptop-hacking-using-mask-png-image_9158513.png"
+          }
           style={{
             width: "150px",
             height: "150px",
