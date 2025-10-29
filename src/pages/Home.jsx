@@ -73,7 +73,6 @@ function Home() {
           data.virusTotal.status === "queued";
 
         if (waitingForVirusTotal) {
-          console.log("⏳ VirusTotal đang xử lý, thử lại sau 5s...");
           await new Promise((r) => setTimeout(r, 5000));
         }
 
